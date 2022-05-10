@@ -4,7 +4,8 @@ import "jvm-go/classfile"
 
 type Field struct {
 	ClassMember
-	slotId          uint
+	slotId uint
+	// 常量池索引
 	constValueIndex uint
 }
 

@@ -22,17 +22,17 @@ func (this *FieldRef) ResolvedField() *Field {
 	}
 	return this.field
 }
-func (self *FieldRef) resolveFieldRef() {
-	d := self.cp.class
-	c := self.ResolvedClass()
-	field := lookupField(c, self.name, self.descriptor)
+func (this *FieldRef) resolveFieldRef() {
+	d := this.cp.class
+	c := this.ResolvedClass()
+	field := lookupField(c, this.name, this.descriptor)
 	if field == nil {
 		panic("java.lang.NoSuchFieldError")
 	}
 	if !field.isAccessibleTo(d) {
 		panic("java.lang.IllegalAccessError")
 	}
-	self.field = field
+	this.field = field
 }
 func lookupField(c *Class, name, descriptor string) *Field {
 	for _, field := range c.fields {

@@ -5,7 +5,6 @@ import (
 	"archive/zip"
 	"bytes"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -89,7 +88,7 @@ func newCompositeEntry(path string) CompositeEntry {
 
 func newWildcardEntry(dirpath string) CompositeEntry {
 	baseDir := dirpath[:len(dirpath)-1]
-	fmt.Println(baseDir)
+	//fmt.Println(baseDir)
 	entry := CompositeEntry{}
 	walkfunc := func(path string, info os.FileInfo, err error) error {
 		if err != nil {

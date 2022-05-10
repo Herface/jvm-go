@@ -45,3 +45,6 @@ func (this *Stack) peek() *Frame {
 	}
 	return this.top
 }
+func (this *Stack) IsEmpty() bool {
+	return this.top == nil
+}

@@ -1,8 +1,11 @@
 package rtda
 
+import "jvm-go/rtda/heap"
+
 type Thread struct {
-	pc    int
-	stack *Stack
+	pc     int
+	stack  *Stack
+	method *heap.Method
 }
 
 func NewThread() *Thread {
@@ -27,6 +30,10 @@ func (this *Thread) CurrentFrame() *Frame {
 	return this.stack.peek()
 }
 
-func (self *Thread) NewFrame(maxLocals, maxStack uint) *Frame {
-	return NewFrame(self, maxLocals, maxStack)
+func (self *Thread) NewFrame(method *heap.Method) *Frame {
+	return NewFrame(self, method)
+}
+
+func (this *Thread) IsEmpty() bool {
+	return this.stack.IsEmpty()
 }

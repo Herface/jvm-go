@@ -29,11 +29,11 @@ func (self *ClassMember) isAccessibleTo(d *Class) bool {
 	}
 	c := self.class
 	if self.IsProtected() {
-		return d == c || d.isSubClassOf(c) ||
-			c.getPackageName() == d.getPackageName()
+		return d == c || d.IsSubClassOf(c) ||
+			c.GetPackageName() == d.GetPackageName()
 	}
 	if !self.IsPrivate() {
-		return c.getPackageName() == d.getPackageName()
+		return c.GetPackageName() == d.GetPackageName()
 	}
 	return d == c
 }
@@ -45,9 +45,15 @@ func (this *ClassMember) IsProtected() bool {
 
 func (this *ClassMember) IsPrivate() bool {
 	return this.accessFlags&ACC_PRIVATE != 0
-
 }
 
+func (this *Method) IsAbstract() bool {
+	return this.accessFlags&ACC_ABSTRACT != 0
+
+}
+func (this *Class) IsSuper() bool {
+	return this.accessFlags&ACC_SUPER != 0
+}
 func (this *ClassMember) Class() *Class {
 	return this.class
 }

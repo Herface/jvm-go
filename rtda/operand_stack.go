@@ -94,3 +94,6 @@ func (this *OperandStack) InsertDownN(slot Slot, downN uint) {
 func (this *OperandStack) Get(index uint) Slot {
 	return this.slots[index]
 }
+func (this *OperandStack) GetRefFromTop(n uint) *heap.Object {
+	return this.slots[this.size-1-n].ref
+}

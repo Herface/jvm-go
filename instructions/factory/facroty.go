@@ -1,20 +1,23 @@
-package common
+package factory
 
 import (
 	"fmt"
+	"jvm-go/instructions/common"
 	"jvm-go/instructions/comparisons"
 	"jvm-go/instructions/constants"
+	"jvm-go/instructions/control"
 	"jvm-go/instructions/conversions"
 	"jvm-go/instructions/loads"
 	"jvm-go/instructions/math"
+	"jvm-go/instructions/references"
 	"jvm-go/instructions/stores"
 )
 
-func NewInstruction(opcode byte) Instruction {
+func NewInstruction(opcode byte) common.Instruction {
 
 	switch opcode {
 	case 0x0:
-		return &NoOperandsInstruction{}
+		return &common.NoOperandsInstruction{}
 	case 0x1:
 		return &constants.ACONST_NULL{}
 	case 0x19:
@@ -55,6 +58,12 @@ func NewInstruction(opcode byte) Instruction {
 		return &constants.DCONST_0{}
 	case 0xf:
 		return &constants.DCONST_1{}
+
+	case 0xB1:
+		return &control.RETURN{}
+
+	case 0xB8:
+		return &references.INVOKE_STATIC{}
 
 	}
 

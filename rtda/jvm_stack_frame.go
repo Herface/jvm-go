@@ -35,11 +35,12 @@ func (this *Frame) GetNextPC() int {
 func (this *Frame) Method() *heap.Method {
 	return this.method
 }
-func NewFrame(thread *Thread, maxLocals, maxStack uint) *Frame {
+func NewFrame(thread *Thread, method *heap.Method) *Frame {
 	return &Frame{
 		thread:       thread,
-		localVars:    NewLocalVars(maxLocals),
-		operandStack: NewOperandStack(maxStack),
+		localVars:    NewLocalVars(method.MaxLocals()),
+		operandStack: NewOperandStack(method.MaxStack()),
+		method:       method,
 	}
 }
 
@@ -98,4 +99,8 @@ func (this LocalVars) SetRef(index uint, ref *heap.Object) {
 }
 func (this LocalVars) GetRef(index uint) *heap.Object {
 	return this[index].ref
+}
+
+func (this LocalVars) SetSlot(index uint, slot Slot) {
+	this[index] = slot
 }

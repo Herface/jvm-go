@@ -71,6 +71,7 @@ func resolveInterfaces(class *Class) {
 	}
 }
 
+// 链接
 func link(class *Class) {
 	verify(class)
 	prepare(class)
@@ -127,7 +128,7 @@ func allocAndInitStaticVars(class *Class) {
 	}
 }
 
-// 初始化所有静态常量
+// 初始化所有静态常量 <init方法之前>
 func initStaticFinalVar(class *Class, field *Field) {
 	vars := class.staticVars
 	cp := class.constantPool

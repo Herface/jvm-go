@@ -1,5 +1,6 @@
 package classfile
 
+// UnparsedAttribute 未解析的属性
 type UnparsedAttribute struct {
 	name   string
 	length uint32

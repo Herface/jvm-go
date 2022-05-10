@@ -37,15 +37,15 @@ func (this *Class) IsPublic() bool {
 	return 0 != this.accessFlags&ACC_PUBLIC
 }
 func (this *Class) isAccessibleTo(other *Class) bool {
-	return this.IsPublic() || this.getPackageName() == other.getPackageName()
+	return this.IsPublic() || this.GetPackageName() == other.GetPackageName()
 }
-func (this *Class) getPackageName() string {
+func (this *Class) GetPackageName() string {
 	if i := strings.LastIndex(this.name, "/"); i >= 0 {
 		return this.name[:i]
 	}
 	return ""
 }
-func (this *Class) isSubClassOf(other *Class) bool {
+func (this *Class) IsSubClassOf(other *Class) bool {
 	for c := this.superClass; c != nil; c = c.superClass {
 		if c == other {
 			return true
@@ -80,12 +80,12 @@ func (self *Class) isAssignableFrom(other *Class) bool {
 		return true
 	}
 	if !t.IsInterface() {
-		return s.isSubClassOf(t)
+		return s.IsSubClassOf(t)
 	} else {
-		return s.isImplements(t)
+		return s.IsImplements(t)
 	}
 }
-func (this *Class) isImplements(iface *Class) bool {
+func (this *Class) IsImplements(iface *Class) bool {
 	for c := this; c != nil; c = c.superClass {
 		for _, i := range c.interfaces {
 			if i == iface || i.isSubInterfaceOf(iface) {
@@ -105,9 +105,36 @@ func (this *Class) isSubInterfaceOf(iface *Class) bool {
 	}
 	return false
 }
+
+func (this *Class) IsSuperClassOf(cls *Class) bool {
+	if cls == nil {
+		return false
+	}
+	if cls == this {
+		return true
+	}
+	if this.IsSuperClassOf(cls.superClass) {
+		return true
+	}
+	return false
+}
+
+func (this *Class) SuperClass() *Class {
+	return this.superClass
+}
+
 func newObject(class *Class) *Object {
 	return &Object{
 		class:  class,
 		fields: newSlots(class.instanceSlotCount),
 	}
+}
+
+func (this *Class) FindMainClass() *Method {
+	for _, m := range this.methods {
+		if m.name == "main" && m.descriptor == "()V" {
+			return m
+		}
+	}
+	return nil
 }

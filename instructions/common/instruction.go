@@ -3,7 +3,9 @@ package common
 import "jvm-go/rtda"
 
 type Instruction interface {
+	// FetchOperands 获取操作码
 	FetchOperands(reader *BytecodeReader)
+	// Execute 执行指令
 	Execute(frame *rtda.Frame)
 }
 

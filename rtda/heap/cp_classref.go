@@ -2,6 +2,7 @@ package heap
 
 import "jvm-go/classfile"
 
+// ClassRef 类符号引用
 type ClassRef struct {
 	SymRef
 }
