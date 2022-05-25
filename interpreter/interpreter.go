@@ -4,11 +4,9 @@ import (
 	"jvm-go/instructions/common"
 	"jvm-go/instructions/factory"
 	"jvm-go/rtda"
-	"jvm-go/rtda/heap"
 )
 
-func Interpret(thread *rtda.Thread, method *heap.Method) {
-	thread.PushFrame(thread.NewFrame(method))
+func Interpret(thread *rtda.Thread) {
 	exec(thread)
 }
 

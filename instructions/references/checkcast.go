@@ -8,7 +8,7 @@ import (
 
 type CHECK_CAST struct{ common.Index16Instruction }
 
-func (self *CHECK_CAST) Execute(frame *rtda.Frame) {
+func (this *CHECK_CAST) Execute(frame *rtda.Frame) {
 	stack := frame.OperandStack()
 	ref := stack.PopRef()
 	stack.PushRef(ref)
@@ -16,7 +16,7 @@ func (self *CHECK_CAST) Execute(frame *rtda.Frame) {
 		return
 	}
 	cp := frame.Method().Class().ConstantPool()
-	classRef := cp.GetConstant(self.Index).(*heap.ClassRef)
+	classRef := cp.GetConstant(this.Index).(*heap.ClassRef)
 	class := classRef.ResolvedClass()
 	if !ref.IsInstanceOf(class) {
 		panic("java.lang.ClassCastException")

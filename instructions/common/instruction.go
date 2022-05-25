@@ -13,7 +13,7 @@ type Instruction interface {
 type NoOperandsInstruction struct{}
 
 // FetchOperands 读取操作码
-func (self *NoOperandsInstruction) FetchOperands(reader *BytecodeReader) {}
+func (this *NoOperandsInstruction) FetchOperands(reader *BytecodeReader) {}
 
 func (this *NoOperandsInstruction) Execute(frame *rtda.Frame) {}
 
@@ -31,8 +31,8 @@ type Index8Instruction struct {
 	Index uint
 }
 
-func (self *Index8Instruction) FetchOperands(reader *BytecodeReader) {
-	self.Index = uint(reader.ReadUint8())
+func (this *Index8Instruction) FetchOperands(reader *BytecodeReader) {
+	this.Index = uint(reader.ReadUint8())
 }
 
 // Index16Instruction 读常量池指令 2字节操作码
@@ -40,6 +40,6 @@ type Index16Instruction struct {
 	Index uint
 }
 
-func (self *Index16Instruction) FetchOperands(reader *BytecodeReader) {
-	self.Index = uint(reader.ReadUint16())
+func (this *Index16Instruction) FetchOperands(reader *BytecodeReader) {
+	this.Index = uint(reader.ReadUint16())
 }

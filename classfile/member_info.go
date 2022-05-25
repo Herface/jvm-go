@@ -59,3 +59,8 @@ func (this *MemberInfo) ConstantValueAttribute() *ConstantValueAttribute {
 	}
 	return nil
 }
+
+func (this *MemberInfo) Attributes() []AttributeInfo  {
+	return this.attributes
+}
+

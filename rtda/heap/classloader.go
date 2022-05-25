@@ -12,19 +12,79 @@ type ClassLoader struct {
 	classMap map[string]*Class // loaded classes
 }
 
-func NewClassLoader(cp *classpath.Classpath) *ClassLoader {
-	return &ClassLoader{
-		cp:       cp,
+func NewClassLoader(cp *classpath.Classpath,) *ClassLoader {
+	loader := &ClassLoader{
+		cp: cp,
+		//verboseFlag: verboseFlag,
 		classMap: make(map[string]*Class),
 	}
+	// 先加载java.lang.Class
+	loader.loadBasicClasses()
+	// 基本数据类型
+	loader.loadPrimitiveClasses()
+	return loader
 }
-func (this *ClassLoader) LoadClass(name string) *Class {
-	if class, ok := this.classMap[name]; ok {
-		return class // 类已经加载
+func (this *ClassLoader) loadPrimitiveClasses() {
+	for primitiveType, _ := range primitiveTypes {
+		this.loadPrimitiveClass(primitiveType)
 	}
-	return this.loadNonArrayClass(name)
 }
 
+func (this *ClassLoader) loadPrimitiveClass(className string) {
+	class := &Class{
+		accessFlags: ACC_PUBLIC,
+		name: className,
+		loader: this,
+		initStarted: true,
+	}
+	class.jClass = this.classMap["java/lang/Class"].NewObject()
+	class.jClass.extra = class
+	this.classMap[className] = class
+}
+
+func (this *ClassLoader) loadBasicClasses() {
+	jlClassClass := this.LoadClass("java/lang/Class")
+	for _, class := range this.classMap {
+		if class.jClass == nil {
+			class.jClass = jlClassClass.NewObject()
+			class.jClass.extra = class
+		}
+	}
+}
+
+func (this *ClassLoader) LoadClass(name string) *Class {
+	if class, ok := this.classMap[name]; ok {
+		return class // already loaded
+	}
+	var class *Class
+	if name[0] == '[' { // array class
+		class = this.loadArrayClass(name)
+	} else {
+		class = this.loadNonArrayClass(name)
+	}
+	// 给加载的类(go结构体表示) 附上java.lang.Class对象
+	if jlClassClass, ok := this.classMap["java/lang/Class"]; ok {
+		class.jClass = jlClassClass.NewObject()
+		class.jClass.extra = class
+	}
+	return class
+}
+
+func (this *ClassLoader) loadArrayClass(name string) *Class {
+	class := &Class{
+		accessFlags: ACC_PUBLIC,
+		name: name,
+		loader: this,
+		initStarted: true,
+		superClass: this.LoadClass("java/lang/Object"),
+		interfaces: []*Class{
+			this.LoadClass("java/lang/Cloneable"),
+			this.LoadClass("java/io/Serializable"),
+		},
+	}
+	this.classMap[name] = class
+	return class
+}
 func (this *ClassLoader) loadNonArrayClass(name string) *Class {
 	data, entry := this.readClass(name)
 	class := this.defineClass(data)
@@ -39,13 +99,12 @@ func (this *ClassLoader) readClass(name string) ([]byte, classpath.Entry) {
 	}
 	return data, entry
 }
-
-func (self *ClassLoader) defineClass(data []byte) *Class {
+func (this *ClassLoader) defineClass(data []byte) *Class {
 	class := parseClass(data)
-	class.loader = self
+	class.loader = this
 	resolveSuperClass(class)
 	resolveInterfaces(class)
-	self.classMap[class.name] = class
+	this.classMap[class.name] = class
 	return class
 }
 func parseClass(data []byte) *Class {
@@ -75,10 +134,18 @@ func resolveInterfaces(class *Class) {
 func link(class *Class) {
 	verify(class)
 	prepare(class)
+	resolve(class)
 }
 func verify(class *Class) {
 	// todo
 }
+
+// resolve 解析 符号引用 -> 直接引用
+// 静态 private init方法 and 属性
+func resolve(class *Class)  {
+
+}
+
 func prepare(class *Class) {
 	calcInstanceFieldSlotIds(class)
 	calcStaticFieldSlotIds(class)
@@ -149,7 +216,10 @@ func initStaticFinalVar(class *Class, field *Field) {
 			val := cp.GetConstant(cpIndex).(float64)
 			vars.SetDouble(slotId, val)
 		case "Ljava/lang/String;":
-			panic("todo") // 在第
+			// 将字符串从常量池取出
+			goStr := cp.GetConstant(cpIndex).(string)
+			jStr := JString(class.Loader(), goStr)
+			vars.SetRef(slotId, jStr)
 		}
 	}
 }

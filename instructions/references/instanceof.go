@@ -8,7 +8,7 @@ import (
 
 type INSTANCE_OF struct{ common.Index16Instruction }
 
-func (self *INSTANCE_OF) Execute(frame *rtda.Frame) {
+func (this *INSTANCE_OF) Execute(frame *rtda.Frame) {
 	stack := frame.OperandStack()
 	ref := stack.PopRef()
 	if ref == nil {
@@ -16,7 +16,7 @@ func (self *INSTANCE_OF) Execute(frame *rtda.Frame) {
 		return
 	}
 	cp := frame.Method().Class().ConstantPool()
-	classRef := cp.GetConstant(self.Index).(*heap.ClassRef)
+	classRef := cp.GetConstant(this.Index).(*heap.ClassRef)
 	class := classRef.ResolvedClass()
 	if ref.IsInstanceOf(class) {
 		stack.PushInt(1)

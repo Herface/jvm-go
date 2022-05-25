@@ -19,9 +19,9 @@ func newFields(class *Class, cfFields []*classfile.MemberInfo) []*Field {
 	}
 	return fields
 }
-func (self *Field) copyAttributes(cfField *classfile.MemberInfo) {
+func (this *Field) copyAttributes(cfField *classfile.MemberInfo) {
 	if valAttr := cfField.ConstantValueAttribute(); valAttr != nil {
-		self.constValueIndex = uint(valAttr.ConstantValueIndex())
+		this.constValueIndex = uint(valAttr.ConstantValueIndex())
 	}
 }
 func (this *Field) isLongOrDouble() bool {
@@ -36,6 +36,3 @@ func (this *Field) ConstValueIndex() uint {
 	return this.constValueIndex
 }
 
-func (this *Field) Descriptor() string {
-	return this.descriptor
-}

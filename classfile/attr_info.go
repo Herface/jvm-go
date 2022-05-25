@@ -31,7 +31,7 @@ func newAttributeInfo(attrName string, attrLen uint32, cp ConstantPool) Attribut
 	//case "Deprecated": return &DeprecatedAttribute{}
 	case "Exceptions":
 		return &ExceptionsAttribute{}
-	//case "LineNumberTable": return &LineNumberTableAttribute{}
+	case "LineNumberTable": return &LineNumberTableAttribute{}
 	//case "LocalVariableTable": return &LocalVariableTableAttribute{}
 	case "SourceFile":
 		return &SourceFileAttribute{cp: cp}

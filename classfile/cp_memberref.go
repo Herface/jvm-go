@@ -1,6 +1,6 @@
 package classfile
 
-// ConstantMemberrefInfo 类成员符号引用
+// ConstantMemberrefInfo 类成员符号引用 属性 方法
 type ConstantMemberrefInfo struct {
 	cp               ConstantPool
 	classIndex       uint16

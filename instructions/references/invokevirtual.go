@@ -8,10 +8,10 @@ import (
 
 type INVOKE_VIRTUAL struct{ common.Index16Instruction }
 
-func (self *INVOKE_VIRTUAL) Execute(frame *rtda.Frame) {
+func (this *INVOKE_VIRTUAL) Execute(frame *rtda.Frame) {
 	currentClass := frame.Method().Class()
 	cp := currentClass.ConstantPool()
-	methodRef := cp.GetConstant(self.Index).(*heap.MethodRef)
+	methodRef := cp.GetConstant(this.Index).(*heap.MethodRef)
 	resolvedMethod := methodRef.ResolvedMethod()
 	if resolvedMethod.IsStatic() {
 		panic("java.lang.IncompatibleClassChangeError")

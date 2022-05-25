@@ -18,6 +18,24 @@ type ExceptionTableEntry struct {
 	catchType uint16
 }
 
+func (this *ExceptionTableEntry) StartPc() uint16 {
+	return this.startPc
+}
+
+func (this *ExceptionTableEntry) EndPc() uint16 {
+	return this.endPc
+}
+
+func (this *ExceptionTableEntry) HandlerPc() uint16 {
+	return this.handlerPc
+}
+
+func (this *ExceptionTableEntry) CatchType() uint16 {
+	return this.catchType
+}
+
+
+
 func (this *CodeAttribute) readInfo(reader *ClassReader) {
 	this.maxStack = reader.ReadUint16()
 	this.maxLocals = reader.ReadUint16()
@@ -50,4 +68,18 @@ func (this *CodeAttribute) MaxLocals() uint16 {
 
 func (this *CodeAttribute) MaxStack() uint16 {
 	return this.maxStack
+}
+
+func (this *CodeAttribute) ExceptionTable() []*ExceptionTableEntry {
+	return this.exceptionTable
+}
+
+func (this *CodeAttribute) LineNumberTable() *LineNumberTableAttribute {
+	for _, attr := range this.attributes {
+		a, ok := attr.(*LineNumberTableAttribute)
+		if ok {
+			return a
+		}
+	}
+	return nil
 }

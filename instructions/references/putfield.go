@@ -9,11 +9,11 @@ import (
 
 type PUT_FIELD struct{ common.Index16Instruction }
 
-func (self *PUT_FIELD) Execute(frame *rtda.Frame) {
+func (this *PUT_FIELD) Execute(frame *rtda.Frame) {
 	currentMethod := frame.Method()
 	currentClass := currentMethod.Class()
 	cp := currentClass.ConstantPool()
-	fieldRef := cp.GetConstant(self.Index).(*heap.FieldRef)
+	fieldRef := cp.GetConstant(this.Index).(*heap.FieldRef)
 	field := fieldRef.ResolvedField()
 	if field.IsStatic() {
 		panic("java.lang.IncompatibleClassChangeError")

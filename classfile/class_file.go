@@ -2,7 +2,7 @@ package classfile
 
 import "fmt"
 
-// ClassFile 类结构
+// ClassFile 字节码文件结构
 type ClassFile struct {
 	//magic uint32
 	minorVersion uint16
@@ -21,19 +21,19 @@ func (this *ClassFile) AccessFlags() uint16 {
 	return this.accessFlags
 }
 
-func (self *ClassFile) ClassName() string {
-	return self.constantPool.getClassName(self.thisClass)
+func (this *ClassFile) ClassName() string {
+	return this.constantPool.getClassName(this.thisClass)
 }
-func (self *ClassFile) SuperClassName() string {
-	if self.superClass > 0 {
-		return self.constantPool.getClassName(self.superClass)
+func (this *ClassFile) SuperClassName() string {
+	if this.superClass > 0 {
+		return this.constantPool.getClassName(this.superClass)
 	}
 	return ""
 }
-func (self *ClassFile) InterfaceNames() []string {
-	interfaceNames := make([]string, len(self.interfaces))
-	for i, cpIndex := range self.interfaces {
-		interfaceNames[i] = self.constantPool.getClassName(cpIndex)
+func (this *ClassFile) InterfaceNames() []string {
+	interfaceNames := make([]string, len(this.interfaces))
+	for i, cpIndex := range this.interfaces {
+		interfaceNames[i] = this.constantPool.getClassName(cpIndex)
 	}
 	return interfaceNames
 }
@@ -52,38 +52,38 @@ func Parse(classData []byte) (cf *ClassFile, err error) {
 	cf.read(cr)
 	return
 }
-func (self *ClassFile) readAndCheckMagic(reader *ClassReader) {
+func (this *ClassFile) readAndCheckMagic(reader *ClassReader) {
 	magic := reader.ReadUint32()
 	if magic != 0xCAFEBABE {
 		panic("java.lang.ClassFormatError: magic!")
 	}
 }
 
-func (self *ClassFile) readAndCheckVersion(reader *ClassReader) {
-	self.minorVersion = reader.ReadUint16()
-	self.majorVersion = reader.ReadUint16()
-	switch self.majorVersion {
+func (this *ClassFile) readAndCheckVersion(reader *ClassReader) {
+	this.minorVersion = reader.ReadUint16()
+	this.majorVersion = reader.ReadUint16()
+	switch this.majorVersion {
 	case 45:
 		return
 	case 46, 47, 48, 49, 50, 51, 52:
-		if self.minorVersion == 0 {
+		if this.minorVersion == 0 {
 			return
 		}
 	}
 	panic("java.lang.UnsupportedClassVersionError!")
 }
 
-func (self *ClassFile) read(reader *ClassReader) {
-	self.readAndCheckMagic(reader)
-	self.readAndCheckVersion(reader)
-	self.constantPool = readConstantPool(reader)
-	self.accessFlags = reader.ReadUint16()
-	self.thisClass = reader.ReadUint16()
-	self.superClass = reader.ReadUint16()
-	self.interfaces = reader.ReadUint16s()
-	self.fields = readMembers(reader, self.constantPool)
-	self.methods = readMembers(reader, self.constantPool)
-	self.attributes = readAttributes(reader, self.constantPool)
+func (this *ClassFile) read(reader *ClassReader) {
+	this.readAndCheckMagic(reader)
+	this.readAndCheckVersion(reader)
+	this.constantPool = readConstantPool(reader)
+	this.accessFlags = reader.ReadUint16()
+	this.thisClass = reader.ReadUint16()
+	this.superClass = reader.ReadUint16()
+	this.interfaces = reader.ReadUint16s()
+	this.fields = readMembers(reader, this.constantPool)
+	this.methods = readMembers(reader, this.constantPool)
+	this.attributes = readAttributes(reader, this.constantPool)
 }
 
 func (this *ClassFile) ConstantPool() ConstantPool {
@@ -96,4 +96,14 @@ func (this *ClassFile) Fields() []*MemberInfo {
 
 func (this *ClassFile) Methods() []*MemberInfo {
 	return this.methods
+}
+
+func (this *ClassFile) SourceFileAttribute() *SourceFileAttribute {
+	for _, attr := range this.attributes {
+		attribute, ok := attr.(*SourceFileAttribute)
+		if ok {
+			return attribute
+		}
+	}
+	return nil
 }

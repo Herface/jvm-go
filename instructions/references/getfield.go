@@ -1,4 +1,5 @@
 package references
+// 获取对象属性指令
 
 import (
 	"jvm-go/instructions/common"

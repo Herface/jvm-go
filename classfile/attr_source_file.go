@@ -1,5 +1,5 @@
 package classfile
-
+// SourceFileAttribute 源文件名
 type SourceFileAttribute struct {
 	cp              ConstantPool
 	sourceFileIndex uint16

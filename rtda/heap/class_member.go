@@ -23,16 +23,16 @@ func (this *ClassMember) IsPublic() bool {
 func (this *ClassMember) IsFinal() bool {
 	return this.accessFlags&ACC_FINAL != 0
 }
-func (self *ClassMember) isAccessibleTo(d *Class) bool {
-	if self.IsPublic() {
+func (this *ClassMember) isAccessibleTo(d *Class) bool {
+	if this.IsPublic() {
 		return true
 	}
-	c := self.class
-	if self.IsProtected() {
+	c := this.class
+	if this.IsProtected() {
 		return d == c || d.IsSubClassOf(c) ||
 			c.GetPackageName() == d.GetPackageName()
 	}
-	if !self.IsPrivate() {
+	if !this.IsPrivate() {
 		return c.GetPackageName() == d.GetPackageName()
 	}
 	return d == c
@@ -59,4 +59,8 @@ func (this *ClassMember) Class() *Class {
 }
 func (this *ClassMember) Name() string {
 	return this.name
+}
+
+func (this *ClassMember) Descriptor() string {
+	return this.descriptor
 }

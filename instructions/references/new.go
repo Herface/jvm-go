@@ -8,10 +8,15 @@ import (
 
 type NEW struct{ common.Index16Instruction }
 
-func (self *NEW) Execute(frame *rtda.Frame) {
+func (this *NEW) Execute(frame *rtda.Frame) {
 	cp := frame.Method().Class().ConstantPool()
-	classRef := cp.GetConstant(self.Index).(*heap.ClassRef)
+	classRef := cp.GetConstant(this.Index).(*heap.ClassRef)
 	class := classRef.ResolvedClass()
+	if !class.InitStarted() {
+		frame.RevertNextPC()
+		common.InitClass(frame.Thread(), class)
+		return
+	}
 	if class.IsInterface() || class.IsAbstract() {
 		panic("java.lang.InstantiationError")
 	}

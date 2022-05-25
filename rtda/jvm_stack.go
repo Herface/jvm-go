@@ -48,3 +48,16 @@ func (this *Stack) peek() *Frame {
 func (this *Stack) IsEmpty() bool {
 	return this.top == nil
 }
+func (this *Stack) clear() {
+	for !this.IsEmpty() {
+		this.pop()
+	}
+}
+
+func (this *Stack) getFrames() []*Frame {
+	frames := make([]*Frame, 0, this.size)
+	for frame := this.top; frame != nil; frame = frame.lower {
+		frames = append(frames, frame)
+	}
+	return frames
+}

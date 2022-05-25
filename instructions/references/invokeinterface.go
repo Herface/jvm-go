@@ -18,9 +18,9 @@ func (this *INVOKE_INTERFACE) FetchOperands(reader *common.BytecodeReader) {
 	reader.ReadUint8()
 }
 
-func (self *INVOKE_INTERFACE) Execute(frame *rtda.Frame) {
+func (this *INVOKE_INTERFACE) Execute(frame *rtda.Frame) {
 	cp := frame.Method().Class().ConstantPool()
-	methodRef := cp.GetConstant(self.index).(*heap.InterfaceMethodRef)
+	methodRef := cp.GetConstant(this.index).(*heap.InterfaceMethodRef)
 	resolvedMethod := methodRef.ResolvedInterfaceMethod()
 	if resolvedMethod.IsStatic() || resolvedMethod.IsPrivate() {
 		panic("java.lang.IncompatibleClassChangeError")

@@ -35,6 +35,12 @@ func (this *Frame) GetNextPC() int {
 func (this *Frame) Method() *heap.Method {
 	return this.method
 }
+
+func (this *Frame) RevertNextPC() {
+	this.pc = this.thread.PC()
+}
+
+
 func NewFrame(thread *Thread, method *heap.Method) *Frame {
 	return &Frame{
 		thread:       thread,
@@ -103,4 +109,15 @@ func (this LocalVars) GetRef(index uint) *heap.Object {
 
 func (this LocalVars) SetSlot(index uint, slot Slot) {
 	this[index] = slot
+}
+
+func (this LocalVars) GetThis() *heap.Object {
+	return this.GetRef(0)
+}
+// Clear 清空操作数栈
+func (this *OperandStack) Clear() {
+	this.size = 0
+	for i := range this.slots {
+		this.slots[i].ref = nil
+	}
 }

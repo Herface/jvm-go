@@ -6,6 +6,7 @@ type Thread struct {
 	pc     int
 	stack  *Stack
 	method *heap.Method
+	jlthread *heap.Object
 }
 
 func NewThread() *Thread {
@@ -30,10 +31,29 @@ func (this *Thread) CurrentFrame() *Frame {
 	return this.stack.peek()
 }
 
-func (self *Thread) NewFrame(method *heap.Method) *Frame {
-	return NewFrame(self, method)
+func (this *Thread) NewFrame(method *heap.Method) *Frame {
+	return NewFrame(this, method)
 }
 
 func (this *Thread) IsEmpty() bool {
 	return this.stack.IsEmpty()
+}
+func (this *Thread) ClearStack() {
+	this.stack.clear()
+}
+
+func (this *Thread) IsStackEmpty() bool {
+	return this.IsEmpty()
+}
+
+func (this *Thread) GetFrames() []*Frame {
+	return this.stack.getFrames()
+}
+
+func (this *Thread) JLThread() *heap.Object {
+	return this.jlthread
+}
+
+func (this *Thread) SetJLThread(jlthread *heap.Object) {
+	this.jlthread = jlthread
 }

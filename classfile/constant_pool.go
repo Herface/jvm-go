@@ -1,7 +1,6 @@
 package classfile
 
 // ConstantPool 常量池
-//
 type ConstantPool []ConstantInfo
 
 func (this ConstantPool) getConstantInfo(index uint16) ConstantInfo {
